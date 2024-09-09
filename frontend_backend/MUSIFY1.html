@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSIFY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: silver;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .main-container {
+            display: flex; 
+            align-items: flex-start; 
+        }
+        .player-container {
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 350px;
+            background-color: #333;
+            position: relative;
+            background-size: cover;
+            background-position: center; 
+            background-repeat: no-repeat;
+        }
+        
+
+        h1 {
+            font-size: 35px;
+            font-family: 'New Times Roman', serif;
+            margin-bottom: 20px;
+        }
+
+
+        #audio-player {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+
+        .controls button {
+            background-color: #1DB954;
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .controls button:hover {
+            background-color: #1ED760;
+        }
+        h2 {
+            font-family: 'Droid Sans Mono', monospace;
+            font-size: 23px;
+        }
+
+
+        .playlist {
+            text-align: center;
+            height: 250px;
+        }
+
+
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .playlist-item button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+            transition: color 0.3s ease;
+        }
+
+
+        .playlist-item button:hover {
+            color: #FF4C4C;
+        }
+
+
+        .playlist-item.active {
+            background-color: #1DB954;
+            border-color: #1DB954;
+        }
+        .add-song-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+
+        .add-song-container label {
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 50px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .add-song-container label:hover {
+            background-color: #333;
+        }
+
+
+        .add-song-container label svg {
+            margin-right: 2.5px;
+        }
+
+
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <h1>MUSIFY</h1>
+        <audio id="audio-player" controls>
+            <source id="audio-source" src="song1.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div class="controls">
+            <button onclick="playSong()">Play</button>
+            <button onclick="pauseSong()">Pause</button>
+        </div>
+        <div class="content-container">
+            <div class="playlist">
+                <h2>Playlist</h2>
+                <div class="playlist-item active">
+                    <span onclick="changeSong('song1.mp3', this)">Song 1</span>
+                    <button onclick="removeSong(this)">-</button>
+                </div>
+                <div class="playlist-item">
+                    <span onclick="changeSong('song2.mp3', this)">Song 2</span>
+                    <button onclick="removeSong(this)">-</button>
+                </div>
+                <div class="playlist-item">
+                    <span onclick="changeSong('song3.mp3', this)">Song 3</span>
+                    <button onclick="removeSong(this)">-</button>
+                </div>
+            </div>
+            <div class="add-song-container">
+                <label for="file-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5V7h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V8H5a.5.5 0 0 1 0-1h2.5V4.5A.5.5 0 0 1 8 4z"/>
+                    </svg>
+                </label>
+                <input type="file" id="file-input" accept="audio/*" onchange="addSong(event)">
+                <label for="change-bg" onclick="changeBackground()" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706l-1 1a.5.5 0 0 1-.707 0L9.854 1.146a.5.5 0 0 1 0-.707l1-1a.5.5 0 0 1 .707 0l3.94 3.94z"/>
+                        <path fill-rule="evenodd" d="M1 13.5V16h2.5L14.854 4.646l-2.5-2.5L1 13.5zm2.5-.5a.5.5 0 0 0 0 1h2.5a.5.5 0 0 0 .5-.5v-2.5a.5.5 0 0 0-1 0V12H3v-1.5z"/>
+                    </svg>
+                </label>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Get the audio player element
+        const audioPlayer = document.getElementById('audio-player');
+        const audioSource = document.getElementById('audio-source');
+        const playlist = document.querySelector('.playlist');
+        const playerContainer = document.querySelector('.player-container');
+
+
+        // Function to play the current song
+        function playSong() {
+            audioPlayer.play();
+        }
+
+
+        // Function to pause the current song
+        function pauseSong() {
+            audioPlayer.pause();
+        }
+
+
+        // Function to change the song source, update the active button, and play the new song
+        function changeSong(song, element) {
+            audioSource.src = song;
+            audioPlayer.load();
+            audioPlayer.play();
+
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.playlist-item').forEach(item => item.classList.remove('active'));
+
+
+            // Add active class to the current item
+            element.parentElement.classList.add('active');
+        }
+
+
+        // Function to add a new song to the playlist
+        function addSong(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const currentSongs = document.querySelectorAll('.playlist-item');
+
+
+                // Check if there are already 4 songs in the playlist
+                if (currentSongs.length >=4) {
+                    alert("You can only add 4 songs to the playlist.");
+                    return;
+                }
+
+
+                const songUrl = URL.createObjectURL(file);
+                const songName = file.name;
+
+
+                // Create a new div for the playlist item
+                const newItem = document.createElement('div');
+                newItem.classList.add('playlist-item');
+
+
+                // Create the span for the song name
+                const songSpan = document.createElement('span');
+                songSpan.textContent = songName;
+                songSpan.onclick = function() {
+                    changeSong(songUrl, songSpan);
+                };
+
+
+                // Create the remove button
+                const removeButton = document.createElement('button');
+                removeButton.textContent = '-';
+                removeButton.onclick = function() {
+                    removeSong(removeButton);
+                };
+
+
+                // Append the song span and remove button to the new item
+                newItem.appendChild(songSpan);
+                newItem.appendChild(removeButton);
+
+
+                // Add the new item to the playlist
+                playlist.appendChild(newItem);
+
+
+                // Automatically play the added song
+                changeSong(songUrl, songSpan);
+            }
+        }
+
+
+        // Function to handle the background change
+        function changeBackground() {
+            let imageUrl = prompt("Enter the URL of the background image:");
+            let confirmChange = confirm("Are you sure you want to change the background?");
+            if (confirmChange) {
+                playerContainer.style.backgroundImage = `url(${imageUrl})`;
+            } else {
+                alert("Background not changed.");
+            }
+        }
+        function removeSong(button) {
+            const playlistItems = document.querySelectorAll('.playlist-item');
+            if (playlistItems.length === 1) {
+                alert("Your playlist should contain at least one song.");
+                return;
+            }
+
+
+            const itemToRemove = button.parentElement;
+            if (itemToRemove.classList.contains('active')) {
+                audioPlayer.pause();
+                audioSource.src = '';
+                audioPlayer.load();
+            }
+            itemToRemove.remove();
+        }
+    </script>
+</body>
+</html>
